@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import { config } from "../config.js";
+import { ForbiddenError } from "./errors.js";
+import { reset } from "../db/queries/users.js";
 
 
 export async function handlerReadiness(_: Request, res: Response) {
@@ -9,16 +11,22 @@ export async function handlerReadiness(_: Request, res: Response) {
 export async function handlerServerHits(_: Request, res: Response) {
       res.set("Content-Type", "text/html; charset=utf-8");
   res.send(`<html>
-  <body>
-    <h1>Welcome, Chirpy Admin</h1>
-    <p>Chirpy has been visited ${config.api.fileserverHits} times!</p>
-  </body>
-</html>
-`);
+          <body>
+            <h1>Welcome, Chirpy Admin</h1>
+            <p>Chirpy has been visited ${config.api.fileserverHits} times!</p>
+          </body>
+        </html>
+    `);
 }
 export async function handlerResetServerHits(_: Request, res: Response) {
+    if (config.api.platform !== "dev") {
+      console.log(config.api.platform);
+      throw new ForbiddenError("Reset is only allowed in dev environment.");
+    }
     config.api.fileserverHits = 0;
+    await reset();
     res.send(`Hits reset to: ${config.api.fileserverHits}`);
+    res.end();
 }
 export async function handlerDecode(req: Request, res: Response) {
   let body = ""; // 1. Initialize
@@ -58,18 +66,12 @@ export async function handlerDecode(req: Request, res: Response) {
     }
   });
 }
-export async function handlerEncode(_: Request, res: Response) {
-    type responseData = {
-      createdAt: string;
-      ID: number;
-    };
+export function respondWithError(res: Response, code: number, message: string) {
+  respondWithJSON(res, code, { error: message });
+}
 
-    const respBody: responseData = {
-      createdAt: new Date().toISOString(),
-      ID: 123,
-    };
-
-    res.header("Content-Type", "application/json");
-    const body = JSON.stringify(respBody);
-    res.status(200).send(body);
+export function respondWithJSON(res: Response, code: number, payload: any) {
+  res.header("Content-Type", "application/json");
+  const body = JSON.stringify(payload);
+  res.status(code).send(body);
 }
