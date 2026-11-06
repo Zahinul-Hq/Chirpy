@@ -13,6 +13,7 @@ type APIConfig = {
   fileserverHits: number;
   port: number;
   platform: string;
+  jwtSecret: string;
 };
 const migrationConfig: MigrationConfig = {
   migrationsFolder: "./src/db/migrations",
@@ -29,6 +30,7 @@ export class Config{
             fileserverHits: 0,
             port: parseInt(envOrThrow('PORT')),
             platform: envOrThrow("PLATFORM"),
+            jwtSecret: envOrThrow("JWT_SECRET"),
         };
         this.dbConfig = {
             dbURL: envOrThrow('DB_URL'),

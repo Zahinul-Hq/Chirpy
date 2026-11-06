@@ -8,6 +8,27 @@
       "when": 1793690595460,
       "tag": "0000_easy_mimic",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793777268254,
+      "tag": "0001_superb_wolfpack",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793852705148,
+      "tag": "0002_big_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793873430899,
+      "tag": "0003_flawless_spectrum",
+      "breakpoints": true
     }
   ]
 }
